@@ -107,11 +107,19 @@ void ListaLigada::apagaLista(){
 
 int compararIp(char *ip1, char *ip2){
     for (int i = 0; i < 16; i++) {
-        if (ip1[i] != ip2[i]) {
-            return 0; // arrays são diferentes
+        if(ip1[i] != NULL){
+            if(ip2[i] != NULL){
+                if (ip1[i] != ip2[i]) {
+                    return 0;
+                }
+            }else{
+                return 0;
+            }
+        }else if(ip2[i] != NULL){
+            return 0;
         }
     }
-    return 1; // arrays são iguais
+    return 1;
 }
 
 int main(){
