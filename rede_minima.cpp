@@ -130,6 +130,13 @@ public:
                     ips[j].viz.insereNo(ip2, custo);
                 }
             }
+
+            for(int k = 0; k < n; k++){
+                if(compararIp(ip2, ips[k].ip) == 1){
+                    ips[k].viz.insereNo(ip1, custo);
+                }
+            }
+
         }
     }
 
@@ -186,10 +193,9 @@ int redeCustoMinimo(Rede R){
                 R.diminui_prioridade(j, p->custo);
             }
             p = p->prox;
+            R.constroiMinHeap();
         }
 
-
-        cout << "CUSTO: " << custoTotal << endl << endl;
 
     }
 
@@ -201,13 +207,6 @@ int main(){
     int n = 0;
     cin >> n;
     Rede r = Rede(n);
-
-    // for(int i = 0; i < n; i++){
-    //     cout << "IP: " << r.ips[i].ip << " Prior: " << r.ips[i].prior << endl;
-    //     cout << "Lista Vizinhos: ";
-    //     r.ips[i].viz.printarLista();
-    //     cout << endl;
-    // }
 
     cout << "CUSTO: " << redeCustoMinimo(r) << endl;
 
