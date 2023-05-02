@@ -10,15 +10,15 @@
 #include <climits>
 using namespace std;
 
+//Declaração da função compararIP 
 int compararIp(char *ip1, char *ip2);
 
+//Declaração da classe No e seus construtores 
 class No{
 public:
     char* ip;
     int custo;
     No* prox;
-
-    No(){}
 
     No(char* ip, int custo){
         this->ip = ip;
@@ -27,8 +27,9 @@ public:
     }
 };
 
+//Declaração da classe ListaLigada e seu construtor
+//Declaração das funções apagaLista, InsereNo e printarLista
 class ListaLigada{
-
 public:
     No* inicio;
 
@@ -36,12 +37,16 @@ public:
         inicio = nullptr;
     }
 
-    void apagaLista();
+
     void insereNo(char* ip, int custo);
     void printarLista();
+    void apagarLista();
 
 };
 
+//A função lista ligada recebe um IP do tipo char e um custo do tipo inteiro, cria um
+// novo No e caso a lista esteja vazia, ele será o primeiro elemento, caso haja outros IPs ele será 
+// posto em ultimo
 void ListaLigada::insereNo(char* ip, int custo){
     No* novoNo = new No(ip, custo);
 
@@ -50,7 +55,7 @@ void ListaLigada::insereNo(char* ip, int custo){
         return;
     }
 
-    //Percorre até o final da lista ligada
+    //Percorre até o final da lista ligada e insere
     No* p = inicio;
     while(p->prox != nullptr){
         p = p->prox;
@@ -59,6 +64,8 @@ void ListaLigada::insereNo(char* ip, int custo){
     p->prox = novoNo;
 }
 
+//A função abaixo imprime todos os IPs e seus custos, 
+// ou imprime que a lista está vazia, caso esteja
 void ListaLigada::printarLista(){
     No* p = inicio;
 
@@ -74,32 +81,37 @@ void ListaLigada::printarLista(){
     cout << endl;
 }
 
-void ListaLigada::apagaLista(){
-    No* temp;
-    while(inicio != NULL){
-        temp = inicio;
-        inicio = inicio->prox;
-        free(temp);
+void ListaLigada::apagarLista(){
+    printarLista();
+    No* atual = inicio;
+    while (atual != nullptr) {
+        cout << atual->ip << endl;
+        No* proximo = atual->prox;
+        free(atual);
+        atual = proximo;
     }
 }
 
+//Definição da classe IP e seus construtores, onde o IP receberá o ip propriamente dito, uma prioridade e uma lista ligada
 class IP{
 public:
     char* ip;
     int prior;
     ListaLigada viz;
 
-    IP(){
-
-    }
+    IP(){}
 
     IP(char* ip, int prior){
         this->ip = ip;
         this->prior = prior;
         this->viz = ListaLigada();
     }
+
 };
 
+//Na classe rede, há o vetor de IPs, que será o n dado na entrada, e no construtor será lido os IPs da rede e inseridos no vetor de IPs da classe IP.
+//Também é feita a leitura dos IP's que serão conectados e seus custos, já os conectando
+//Há declarações de funções do MinHeap
 class Rede{
 public:
     IP* ips;
@@ -154,6 +166,9 @@ private:
     void sobe(int i); 
 };
 
+
+//A função compararIP recebe dois IPs do tipo char e os compara
+//retornando 0 de forem diferentes ou 1 se forem iguais 
 int compararIp(char *ip1, char *ip2){
     for (int i = 0; i < 16; i++) {
         if(ip1[i] != '\0'){
@@ -171,12 +186,14 @@ int compararIp(char *ip1, char *ip2){
     return 1;
 }
 
+//Construção do MinHeap pela Rede
 void Rede::constroiMinHeap(){
     for(int i = tam/2-1; i >= 0; i--){
         desce(i);
     }
 }
 
+//
 int redeCustoMinimo(Rede R){
     int custoTotal = 0;
     R.ips[0].prior = 0;
@@ -196,21 +213,11 @@ int redeCustoMinimo(Rede R){
             R.constroiMinHeap();
         }
 
-
     }
 
     return custoTotal;
 }
 
-int main(){
-
-    int n = 0;
-    cin >> n;
-    Rede r = Rede(n);
-
-    cout << "CUSTO: " << redeCustoMinimo(r) << endl;
-
-}
 
 IP Rede::extrai_min(){
     IP menor;
@@ -290,4 +297,15 @@ void Rede::diminui_prioridade(IP j, int c){
         ips[i].prior = c;
         desce(i);
     }
+}
+
+
+int main(){
+
+    int n = 0;
+    cin >> n;
+    Rede r = Rede(n);
+
+    cout << redeCustoMinimo(r) << endl;
+
 }
